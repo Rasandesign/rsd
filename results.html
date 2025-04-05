@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>نتایج جست‌وجو - rsd456</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    .logo {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      animation: colorChange 3s infinite alternate;
+    }
+
+    .logo span {
+      color: #4285F4;
+      animation: bounce 0.5s ease infinite alternate;
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+
+    @keyframes colorChange {
+      0% { color: #FF5722; }
+      25% { color: #FF9800; }
+      50% { color: #4CAF50; }
+      75% { color: #2196F3; }
+      100% { color: #9C27B0; }
+    }
+
+    .search-again {
+      margin-top: 30px;
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .search-again {
+      background-color: #1e1e1e;
+      box-shadow: none;
+    }
+
+    .search-again input, .search-again button {
+      margin-top: 10px;
+    }
+
+    .search-again input {
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      border: 2px solid #4285F4;
+      border-radius: 4px;
+      background-color: #fff;
+      color: #000;
+    }
+
+    body.dark-mode .search-again input {
+      background-color: #2a2a2a;
+      color: #fff;
+      border-color: #90caf9;
+    }
+
+    .search-again button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .result-item {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .result-item {
+      background-color: #1e1e1e;
+    }
+
+    .result-item h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #4285F4;
+    }
+
+    .result-item p {
+      margin: 10px 0;
+      color: #666;
+    }
+
+    body.dark-mode .result-item p {
+      color: #ccc;
+    }
+
+    .result-item a {
+      color: #4285F4;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .result-item a:hover {
+      text-decoration: underline;
+    }
+
+    #rsdLogo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 30px;
+      color: #FF5722;
+    }
+
+    button#toggleTheme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      cursor: pointer;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      z-index: 999;
+    }
+
+    .iframe-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .pagination button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      margin: 0 10px;
+    }
+
+    .extra-links {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .extra-links a {
+      margin: 0 15px;
+      padding: 10px 20px;
+      background-color: #4285F4;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .extra-links a:hover {
+      background-color: #0b73e1;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleTheme">🌙</button>
+  <div class="container">
+    <div class="logo" id="mainLogo"></div>
+
+    <h2 style="text-align:center; color: #444;">نتایج جست‌وجو</h2>
+    <div class="extra-links">
+      <a href="img.html">جستجوی تصاویر</a>
+    </div>
+
+    <div id="resultsContainer"></div>
+    <div id="rsdLogo"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <div class="search-again">
+      <h3 id="searchTitle"></h3>
+      <input type="text" id="searchQueryAgain" placeholder="Search with rsd456" />
+      <button onclick="performNewSearch()">Search</button>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = 'AIzaSyAZkNKej22xoCVAqGkzzazvUxVPWfiqyns';
+    const cx = '7477c54d92be34784';
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('q');
+    const startIndex = parseInt(params.get('start')) || 1;
+
+    // Logo animation
+    function displayLogo() {
+      const logo = `
+        <span class="r">r</span>
+        <span class="s">s</span>
+        <span class="s">s</span>
+        <span class="s">s</span>
+        <span class="d">d</span>
+        <span class="n">4</span>
+        <span class="n">5</span>
+        <span class="n">6</span>
+      `;
+      document.getElementById("mainLogo").innerHTML = logo;
+    }
+
+    // نمایش نتایج
+    function displayResults(items) {
+      const container = document.getElementById("resultsContainer");
+      container.innerHTML = "";
+
+      if (!items || items.length === 0) {
+        container.innerHTML = "<p>نتیجه‌ای یافت نشد.</p>";
+        return;
+      }
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "result-item";
+
+        const domain = new URL(item.link).hostname;
+        const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+
+        el.innerHTML = `
+          <div class="result-header">
+            <img src="${favicon}" alt="favicon" />
+              <h3><a href="${item.link}" rel="noopener noreferrer">${item.title}</a></h3>
+          </div>
+          <p>${item.snippet}</p>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function showFancyRSD(totalResults) {
+      const rsdLogo = document.getElementById("rsdLogo");
+      const pages = Math.min(Math.ceil(totalResults / 10), 20);
+      rsdLogo.textContent = 'R' + 's'.repeat(pages) + 'd456';
+    }
+
+    function displayPagination(currentStart, queries) {
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = '';
+
+      const nextPage = queries.nextPage ? queries.nextPage[0].startIndex : null;
+      const previousPage = queries.previousPage ? queries.previousPage[0].startIndex : null;
+
+      if (previousPage) {
+        const prevButton = document.createElement("button");
+        prevButton.textContent = "← قبلی";
+        prevButton.onclick = () => {
+          window.location.href = `results.html?q=${encodeURIComponent(query)}&start=${previousPage}`;
+        };
+        pagination.appendChild(prevButton);
+      }
+
+      if (nextPage) {
+        const nextButton = document.createElement("button");
+        nextButton.textContent = "بعدی →";
+        nextButton.onclick = () => {
+          window.location.href = `results.html?q=${encodeURIComponent(query)}&start=${nextPage}`;
+        };
+        pagination.appendChild(nextButton);
+      }
+    }
+
+    function showSearchAgain(query) {
+      document.getElementById("searchTitle").textContent = query;
+      document.getElementById("searchQueryAgain").value = query;
+    }
+
+    function performNewSearch() {
+      const newQuery = document.getElementById("searchQueryAgain").value;
+      if (newQuery.trim() !== "") {
+        window.location.href = `results.html?q=${encodeURIComponent(newQuery)}`;
+      }
+    }
+
+    // فعال‌سازی جستجو با کلید Enter
+    document.getElementById("searchQueryAgain").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        performNewSearch();
+      }
+    });
+
+    // حالت شب/روز
+    const toggleBtn = document.getElementById("toggleTheme");
+    const body = document.body;
+
+    toggleBtn.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+      const isDark = body.classList.contains("dark-mode");
+      toggleBtn.textContent = isDark ? "☀️" : "🌙";
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    // بارگذاری تم ذخیره‌شده
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        body.classList.add("dark-mode");
+        toggleBtn.textContent = "☀️";
+      } else {
+        toggleBtn.textContent = "🌙";
+      }
+
+      if (query) {
+        const url = `https://www.googleapis.com/customsearch/v1?q=${query}&start=${startIndex}&key=${apiKey}&cx=${cx}`;
+
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            displayLogo();
+            displayResults(data.items);
+            showFancyRSD(parseInt(data.searchInformation.totalResults));
+            displayPagination(startIndex, data.queries);
+            showSearchAgain(query);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    });
+  </script>
+</body>
+</html>
